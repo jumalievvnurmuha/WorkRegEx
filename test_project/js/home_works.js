@@ -48,7 +48,7 @@ const move = () => {
         moveRight = 0;
         moveBottom = 0;
     }
-    requestAnimationFrame(move);
+    requestAnimationFrame(move)
 }
 
 move();
