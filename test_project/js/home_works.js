@@ -1,31 +1,80 @@
-const gmailInput = document.querySelector('#gmail_input')
-const gmailBtn = document.querySelector('#gmail_button')
-const gmailResult = document.querySelector('#gmail_result')
+const gmailInput = document.querySelector('#gmail_input');
+const gmailBtn = document.querySelector('#gmail_button');
+const gmailResult = document.querySelector('#gmail_result');
 
 const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; //Здесь не только gmail.com можно ввести но и например mail.kg 
 
 gmailBtn.addEventListener('click', () => {
     if(gmailInput.value.match(regex)){
-        gmailResult.style.color = 'green'
-        gmailResult.textContent = 'VALID'
+        gmailResult.style.color = 'green';
+        gmailResult.textContent = 'VALID';
     } else {
-        gmailResult.style.color = 'red'
-        gmailResult.textContent = 'INVALID'
+        gmailResult.style.color = 'red';
+        gmailResult.textContent = 'INVALID';
     }
 })
 
 
 
-const childBlock = document.querySelector('.child_block')
-const parentBlock = document.querySelector('.parent_block')
+const childBlock = document.querySelector('.child_block');
+const parentBlock = document.querySelector('.parent_block');
 
-let pos = 0
-function moveRight() {
-    const max = parentBlock.clientWidth - childBlock.clientWidth
-    if (pos <= max) {
-        childBlock.style.left = pos + 'px'
-        pos++
-        setTimeout(moveRight)
+let moveLeft = 0;
+let moveTop = 0;
+let moveRight = 0;
+let moveBottom = 0;
+
+
+
+let offsetWidth = parentBlock.clientWidth - childBlock.offsetWidth;
+let offsetHeight = parentBlock.clientHeight - childBlock.offsetHeight;
+
+const move = () => {
+    if(moveLeft < offsetWidth){
+        moveLeft ++;
+        childBlock.style.left = `${moveLeft}px`;
+    }else if (moveLeft === offsetWidth && moveTop < offsetHeight){
+        moveTop++;
+        childBlock.style.top = `${moveTop}px`;
+    }else if (moveTop === offsetHeight && moveRight < offsetWidth){
+        moveRight++;
+        childBlock.style.left = `${offsetWidth - moveRight}px`;
+    }else if (moveRight === offsetWidth && moveBottom < offsetHeight){
+        moveBottom++;
+        childBlock.style.top = `${offsetHeight - moveBottom}px`;
+    } else if (moveBottom === offsetHeight) {
+        moveLeft = 0;
+        moveTop = 0;
+        moveRight = 0;
+        moveBottom = 0;
     }
+    requestAnimationFrame(move);
 }
-moveRight()
+
+move();
+
+const secondsBlock = document.querySelector("#seconds");
+const startBtn = document.querySelector("#start");
+const stopBtn = document.querySelector("#stop");
+const resetBtn = document.querySelector("#reset");
+
+let seconds = 0;
+let intervalId = null;
+
+startBtn.addEventListener('click', ()=>{
+    if(intervalId) return;
+    intervalId = setInterval(() => {
+        seconds++;
+        secondsBlock.textContent = seconds;
+    }, 1000)
+})
+stopBtn.addEventListener('click', () => {
+    clearInterval(intervalId);
+    intervalId = null;
+})
+resetBtn.addEventListener('click', () => {
+    clearInterval(intervalId);
+    intervalId = null;
+    seconds = 0;
+    secondsBlock.textContent = seconds;
+})
